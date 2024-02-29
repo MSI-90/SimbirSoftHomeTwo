@@ -19,7 +19,7 @@ public class FistTest extends TestConfig {
     public void getAll(){
         given().log().uri().
                 when().get(getAll).
-                then().log().body().statusCode(200);
+                then().spec(responseSpecForGet).log().body().statusCode(200);
     }
 
     @Test
@@ -67,14 +67,14 @@ public class FistTest extends TestConfig {
         pojoPost.addition.additional_number = 440;
         pojoPost.important_numbers = new ArrayList<Integer>(){};
         pojoPost.important_numbers.add(90);
-        pojoPost.important_numbers.add(67);
-        pojoPost.important_numbers.add(34);
+        pojoPost.important_numbers.add(7);
+        pojoPost.important_numbers.add(3);
         pojoPost.title = "Title of new Entity";
         pojoPost.verified = false;
 
         var recordId = given().body(pojoPost).log().uri()
                 .when().post(post)
-                .then().log().body().statusCode(200);
+                .then().spec(responseSpecForPost).log().body().statusCode(200);
                 //.extract().path("title");
     }
 }
