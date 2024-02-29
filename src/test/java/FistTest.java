@@ -1,5 +1,6 @@
 import config.TestConfig;
 import constants.Constants;
+import helpers.GetAllFilter;
 import org.testng.annotations.Test;
 import pojo.Root;
 
@@ -14,9 +15,11 @@ public class FistTest extends TestConfig {
     protected  String delete = Constants.Actions.delete;
     protected String post = Constants.Actions.create;
 
-
     @Test
     public void getAll(){
+        GetAllFilter filter = new GetAllFilter("", true, 1, 1);
+
+
         given().log().uri().
                 when().get(getAll).
                 then().spec(responseSpecForGet).log().body().statusCode(200);
