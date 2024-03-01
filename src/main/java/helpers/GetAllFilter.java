@@ -2,6 +2,11 @@ package helpers;
 
 import org.hamcrest.text.IsEmptyString;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import static java.net.URLDecoder.decode;
+
 public class GetAllFilter {
     public String title;
     public boolean verified;
@@ -15,15 +20,37 @@ public class GetAllFilter {
         this.perPage = perPage;
     }
 
-    protected String getParams (String path){
+    public String getParams () throws UnsupportedEncodingException {
         String parametrisetString = "";
 
-        if (!title.isEmpty()){
-            parametrisetString += title;
+        if (!title.isEmpty()) {
+            parametrisetString += "title=" + title;
         }
 
+        if (verified) {
+            if (!parametrisetString.isEmpty()) {
+                parametrisetString += "&";
+            }
+            parametrisetString += "verified=" + verified;
+        }
 
-        return parametrisetString;
+        if (page > 0) {
+            if (!parametrisetString.isEmpty()) {
+                parametrisetString += "&";
+            }
+            parametrisetString += "page=" + page;
+        }
+
+        if (perPage > 0) {
+            if (!parametrisetString.isEmpty()) {
+                parametrisetString += "&";
+            }
+            parametrisetString += "perPage=" + perPage;
+        }
+
+        String decodedString = URLDecoder.decode(parametrisetString, "UTF-8");
+
+        return decodedString;
     }
 
 }

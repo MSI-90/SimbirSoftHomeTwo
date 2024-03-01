@@ -4,6 +4,8 @@ import helpers.GetAllFilter;
 import org.testng.annotations.Test;
 import pojo.Root;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static io.restassured.RestAssured.*;
@@ -16,12 +18,18 @@ public class FistTest extends TestConfig {
     protected String post = Constants.Actions.create;
 
     @Test
-    public void getAll(){
-        GetAllFilter filter = new GetAllFilter("", true, 1, 1);
-
-
+    public void getAll() {
         given().log().uri().
                 when().get(getAll).
+                then().spec(responseSpecForGet).log().body().statusCode(200);
+    }
+
+    @Test
+    public void getAllWithParams() throws UnsupportedEncodingException {
+        GetAllFilter filter = new GetAllFilter("", true, 1,1);
+
+        given().log().uri().
+                when().get(getAll+"?"+filter.getParams()).
                 then().spec(responseSpecForGet).log().body().statusCode(200);
     }
 
