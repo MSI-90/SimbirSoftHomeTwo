@@ -13,13 +13,14 @@ public class GetAllFilter {
     public int page;
     public int perPage;
 
+    /*
     public GetAllFilter(String title, boolean verified, int page, int perPage){
         this.title = title;
         this.verified = verified;
         this.page = page;
         this.perPage = perPage;
     }
-
+    */
     public String getParams () throws UnsupportedEncodingException {
         String parametrisetString = "";
 

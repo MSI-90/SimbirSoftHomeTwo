@@ -5,10 +5,10 @@ import org.testng.annotations.Test;
 import pojo.Root;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class FistTest extends TestConfig {
     protected String getAll = Constants.Actions.getAll;
@@ -16,6 +16,7 @@ public class FistTest extends TestConfig {
     protected String patch = Constants.Actions.patch;
     protected  String delete = Constants.Actions.delete;
     protected String post = Constants.Actions.create;
+    public int recordId = 0;
 
     @Test
     public void getAll() {
@@ -26,19 +27,20 @@ public class FistTest extends TestConfig {
 
     @Test
     public void getAllWithParams() throws UnsupportedEncodingException {
-        GetAllFilter filter = new GetAllFilter("", true, 1,1);
+        GetAllFilter filter = new GetAllFilter();
+        String sortByTitle = filter.title = "Title of new Entity";
 
         given().log().uri().
                 when().get(getAll+"?"+filter.getParams()).
-                then().spec(responseSpecForGet).log().body().statusCode(200);
+                then().body("entity.title[1]", equalTo(sortByTitle)).log().body().statusCode(200);
     }
 
     @Test
     public void getById(){
-        int id = 3;
+        recordId = 3;
         given().log().uri().
-                when().get(getById + id).
-                then().log().all().statusCode(200);
+                when().get(getById + recordId).
+                then().body("id", equalTo(recordId)).log().all().statusCode(200);
     }
 
     @Test
@@ -63,9 +65,9 @@ public class FistTest extends TestConfig {
 
     @Test
     public void Delete(){
-        int id = 4;
+        recordId = 4;
         given().log().uri().
-                when().delete(delete + id).
+                when().delete(delete + recordId).
                 then().log().body().statusCode(204)
                 .extract().body().toString();
     }
@@ -83,9 +85,17 @@ public class FistTest extends TestConfig {
         pojoPost.title = "Title of new Entity";
         pojoPost.verified = false;
 
-        var recordId = given().body(pojoPost).log().uri()
+        var newRecordId = given().body(pojoPost).log().uri()
                 .when().post(post)
-                .then().spec(responseSpecForPost).log().body().statusCode(200);
-                //.extract().path("title");
+                .then().spec(responseSpecForPost).log().body().statusCode(200)
+                .extract().body();
+
+        var requestAfterPost = given().
+                when().get(getById + newRecordId).
+                then().statusCode(200);
+
+
+        System.out.println(requestAfterPost);
+
     }
 }
