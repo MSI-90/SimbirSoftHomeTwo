@@ -1,7 +1,10 @@
 import config.TestConfig;
 import constants.Constants;
 import helpers.GetAllFilter;
+import io.restassured.mapper.ObjectMapperType;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+import pojo.Response;
 import pojo.Root;
 
 import java.io.UnsupportedEncodingException;
@@ -37,10 +40,11 @@ public class FistTest extends TestConfig {
 
     @Test
     public void getById(){
-        recordId = 3;
-        given().log().uri().
+        recordId = 19;
+        var responce = given().log().uri().
                 when().get(getById + recordId).
-                then().body("id", equalTo(recordId)).log().all().statusCode(200);
+                then().body("id", equalTo(recordId)).log().all().statusCode(200)
+                .extract().as(Response.class, ObjectMapperType.GSON);
     }
 
     @Test
@@ -87,15 +91,7 @@ public class FistTest extends TestConfig {
 
         var newRecordId = given().body(pojoPost).log().uri()
                 .when().post(post)
-                .then().spec(responseSpecForPost).log().body().statusCode(200)
-                .extract().body();
-
-        var requestAfterPost = given().
-                when().get(getById + newRecordId).
-                then().statusCode(200);
-
-
-        System.out.println(requestAfterPost);
+                .then().spec(responseSpecForPost).log().body().statusCode(200);
 
     }
 }
